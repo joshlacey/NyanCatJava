@@ -1,4 +1,4 @@
-#Nyan Cat Java Game
+# Nyan Cat Java Game
 
 ![Image of NyanCat Game](https://i.imgur.com/vtPmpK2.png)
 
