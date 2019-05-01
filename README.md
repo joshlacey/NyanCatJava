@@ -4,14 +4,11 @@
 
 A Nyan Cat Java game which started out as a clone of the famous Flappy Bird game.
 I built this game to exercise my Java skills using an open source library called libgdx.
-This is very much a work in progress.
-
+This is very much a work in progress. I don't intend on using this project for anything other than for funzies so feel free to clone the project and make it your own.
 
 ### To build and start for Mac: 
 
 `./gradlew desktop:dist && java -jar ./desktop/build/libs/desktop-1.0.jar`
-
-I don't intend on using this project for anything other than for funzies so feel free to clone the project and make it your own.
 
 ### Credits:
 - Music: Elfing https://soundcloud.com/elfing/nyan-cat-music
