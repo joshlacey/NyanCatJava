@@ -1,0 +1,162 @@
+//package com.mygdx.game;
+//
+//
+// import com.badlogic.gdx.ApplicationAdapter;
+// import com.badlogic.gdx.Gdx;
+// import com.badlogic.gdx.graphics.GL20;
+// import com.badlogic.gdx.graphics.Texture;
+// import com.badlogic.gdx.math.Interpolation;
+// import com.badlogic.gdx.scenes.scene2d.InputEvent;
+// import com.badlogic.gdx.scenes.scene2d.InputListener;
+// import com.badlogic.gdx.scenes.scene2d.Group;
+// import com.badlogic.gdx.scenes.scene2d.Stage;
+// import com.badlogic.gdx.physics.box2d.Body;
+// import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+// import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+// import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+// import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
+// import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+// import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+// import com.badlogic.gdx.scenes.scene2d.ui.Image;
+// import com.badlogic.gdx.scenes.scene2d.ui.Label;
+// import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+// import com.badlogic.gdx.scenes.scene2d.ui.Button;
+// import com.badlogic.gdx.utils.Align;
+// import com.badlogic.gdx.utils.viewport.ScreenViewport;
+//
+// public class MyGdxGame extends ApplicationAdapter {
+// 	private Stage stage;
+// 	private static int lapsCount;
+// 	private Label lapsLabel;
+// 	private Group lapsLabelContainer;
+// 	private int GWidth;
+// 	private int GHeight;
+//
+// 	public void initiateScene() {
+// 		lapsCount = 3;
+// 		Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+// 		Texture texture = new Texture(Gdx.files.internal("image.jpg"));
+// 		int TWidth = texture.getWidth();
+// 		int THeight = texture.getHeight();
+// 		int X_left= GWidth/3-TWidth/2;
+// 		int X_right = GWidth*2/3-TWidth/2;
+// 		int Y_top = GHeight*2/3-THeight/2;
+// 		int Y_bottom = GHeight/3-THeight/2;
+//
+// 		Image image1 = new Image(texture);
+// 		image1.setPosition(X_left,Y_top);
+// 		image1.setOrigin(image1.getWidth()/2,image1.getHeight()/2);
+// 		stage.addActor(image1);
+//
+// 		ParallelAction topLeftRightParallelAction = new ParallelAction(
+// 			Actions.moveTo(X_right,Y_top,1,Interpolation.exp5Out),
+// 			Actions.scaleTo(2,2,1,Interpolation.exp5Out)
+// 		);
+// 		MoveToAction moveBottomRightAction = new MoveToAction();
+// 		moveBottomRightAction.setPosition(X_right,Y_bottom);
+// 		moveBottomRightAction.setDuration(1);
+// 		moveBottomRightAction.setInterpolation(Interpolation.smooth);
+//
+// 		RunnableAction updateLapCountAction = new RunnableAction();
+// 		updateLapCountAction.setRunnable(new Runnable() {
+// 			 @Override
+// 			 public void run() {
+// 				 updateLapsCount();
+// 			 }
+// 		 });
+//
+// 		ParallelAction bottomLeftRightParallelAction = new ParallelAction(
+// 			Actions.moveTo(X_left,Y_bottom,1,Interpolation.sineOut),
+// 			Actions.scaleTo(1,1,1)
+// 		);
+//
+// 		ParallelAction leftBottomTopParallelAction = new ParallelAction(
+// 			Actions.moveTo(X_left,Y_top,1,Interpolation.swingOut),
+// 			Actions.rotateBy(90,1)
+// 		);
+//
+// 		SequenceAction overallSequence = new SequenceAction(
+// 			updateLapCountAction,
+// 			topLeftRightParallelAction,
+// 			moveBottomRightAction,
+// 			bottomLeftRightParallelAction,
+// 			leftBottomTopParallelAction
+// 		);
+//
+// 		RepeatAction loopNbrAction = new RepeatAction();
+// 		loopNbrAction.setCount(lapsCount);
+// 		loopNbrAction.setAction(overallSequence);
+// 		lapsLabel = new Label(" Loop :", skin);
+// 		lapsLabel.setPosition(0,0);
+// 		lapsLabel.setSize(GWidth,GHeight);
+// 		lapsLabel.setAlignment(Align.center);
+// 		lapsLabelContainer = new Group();
+// 		lapsLabelContainer.addActor(lapsLabel);
+// 		lapsLabelContainer.setOrigin(lapsLabel.getWidth()/2,lapsLabel.getHeight()/2);
+// 		stage.addActor(lapsLabelContainer);
+//
+// 		RunnableAction completedAction = new RunnableAction();
+// 		completedAction.setRunnable(new Runnable() {
+// 			@Override
+// 			public void run() {
+// 				finished();
+// 			}
+// 		});
+// 		image1.addAction(Actions.sequence(loopNbrAction,completedAction));
+// 	}
+//
+// 	@Override
+// 	public void create () {
+// 		stage = new Stage(new ScreenViewport());
+// 		Gdx.input.setInputProcessor(stage);
+// 		GWidth = Gdx.graphics.getWidth();
+// 		GHeight = Gdx.graphics.getHeight();
+// 		int Center_X = GWidth/2;
+// 		int Center_Y = GHeight/2;
+// 		final StartButton startButton = new StartButton(Center_X, Center_Y);
+// 		startButton.addListener(new InputListener(){
+// 			@Override
+// 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+// 				System.out.println("clicked");
+// 				initiateScene();
+// 				startButton.remove();
+// 				return true;
+// 			}
+// 		});
+// 		stage.addActor(startButton);
+// 	}
+//
+// 	private void updateLapsCount(){
+// 		lapsCount--;
+// 		lapsLabelContainer.setScale(0);
+// 		lapsLabel.setText(" Laps : " + (lapsCount+1));
+// 		ParallelAction parallelAction = new ParallelAction(
+// 			Actions.scaleBy(5,5,4),
+// 			new SequenceAction(
+// 				Actions.fadeIn(1),
+// 				Actions.fadeOut(2)
+// 			)
+// 		);
+// 		lapsLabelContainer.addAction(parallelAction);
+// 	}
+//
+// 	private void finished(){
+// 		lapsLabelContainer.setScale(0);
+// 		SequenceAction FadingSequenceAction = new SequenceAction(Actions.fadeIn(1));
+// 		lapsLabel.setText(" Finished!");
+// 		ParallelAction parallelAction = new ParallelAction(
+// 			Actions.rotateBy(360,2),
+// 			Actions.scaleBy((float)1.2,(float)1.2,3,Interpolation.bounce),
+// 			FadingSequenceAction
+// 		);
+// 		lapsLabelContainer.addAction(parallelAction);
+// 	}
+//
+// 	@Override
+// 	public void render () {
+// 		Gdx.gl.glClearColor(1, 1, 1, 1);
+// 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+// 		stage.act();
+// 		stage.draw();
+// 	}
+// }
